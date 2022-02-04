@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from .crf import CRF
@@ -23,6 +24,7 @@ class BiRnnCrf(nn.Module):
 
         seq_length = masks.sum(1)
         sorted_seq_length, perm_idx = seq_length.sort(descending=True)
+        sorted_seq_length = sorted_seq_length.to('cpu')
         embeds = embeds[perm_idx, :]
 
         pack_sequence = pack_padded_sequence(embeds, lengths=sorted_seq_length, batch_first=True)
